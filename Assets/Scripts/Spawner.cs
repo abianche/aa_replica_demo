@@ -2,16 +2,17 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
-
     public GameObject pinPrefab;
+    public AudioClip shootSound;
 
     void Update()
     {
+        if (GameManager.instance.isPaused()) { return; }
         bool bFired = false;
 
         // Check if we are running either in the Unity editor or in a standalone build.
 #if UNITY_STANDALONE || UNITY_WEBPLAYER
-       
+
         if (Input.GetButtonDown("Fire1"))
         {
             bFired = true;
@@ -34,6 +35,8 @@ public class Spawner : MonoBehaviour
 
         if (bFired)
         {
+            GameManager.instance.audioSource.clip = shootSound;
+            GameManager.instance.audioSource.Play();
             SpawnPin();
         }
     }
