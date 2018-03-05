@@ -1,19 +1,10 @@
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public enum State
 {
     Pause, Running
 }
-
-[System.Serializable]
-public class Level
-{
-    public string objective;
-    public int pins;
-}
-
 
 public class GameManager : MonoBehaviour
 {
@@ -34,16 +25,11 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     Transform PausedPanel; //Will assign our panel to this variable so we can enable/disable it
 
-    public Level[] levels;
-    private int currentLevel = 0;
-
     public bool gameHasEnded = false;
 
     public Rotator rotator;
     public Spawner spawner;
     public Camera mainCamera;
-
-    public Text objective;
 
     void Awake()
     {
@@ -59,24 +45,13 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        if (levels.Length == 0)
-        {
-            Debug.LogError("GM: No levels to play!");
-            return;
-        }
-
-        NextLevel();
+        Score.PinCount = 0;
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
             TogglePause();
-
-        if (Score.PinCount >= GetCurrentLevel().pins)
-        {
-            NextLevel();
-        }
     }
 
     public void TogglePause()
@@ -97,25 +72,6 @@ public class GameManager : MonoBehaviour
     public void Resume()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
-
-    private Level GetCurrentLevel()
-    {
-        return levels[currentLevel - 1];
-    }
-
-    public void NextLevel()
-    {
-        currentLevel++;
-        if (levels.Length < currentLevel)
-        {
-            // no more levels
-            EndGame();
-            return;
-        }
-
-        // Score.PinCount = 0;
-        objective.text = levels[currentLevel - 1].objective;
     }
 
     public void EndGame()

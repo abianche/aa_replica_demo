@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 
 public class Pin : MonoBehaviour
@@ -22,7 +24,19 @@ public class Pin : MonoBehaviour
 
             isPinned = true;
             if (!GameManager.instance.gameHasEnded)
-                Score.PinCount++;
+            {
+                float pinDegrees = col.transform.eulerAngles.z;
+                Rotator rot = col.GetComponent<Rotator>();
+
+                List<float> allPinsDegrees = rot.GetPinsDegrees();
+                float smaller, greater;
+                rot.AddPinDegrees(pinDegrees, out smaller, out greater);
+
+                Debug.Log("Degrees: " + pinDegrees + " S: " + smaller + " G: " + greater);
+
+                
+                Score.PinCount += 1;
+            }
         }
         else if (col.tag == "Pin")
         {
